@@ -18,11 +18,18 @@ st.title('Informes Técnicos Favorables')
 
 with st.sidebar: 
     excel  = st.file_uploader('Subir el reporte generado por el sistema:')
-    empty1 = st.empty()
+    if excel is not None:
+        data     = pd.read_excel(excel, sheet_name = 'ITF-Concluidos')
+        columnas = data.columns.tolist()
+        cols_sel = []
+        for i in range(len(columnas)):
+            if st.checkbox(columnas[i], key = 'col_' + str(i)):
+                cols_sel.append(columnas[i])
         
 if excel is not None:
+    if len(cols_sel) != 0: 
+        st.dataframe(data[cols_sel], hide_index = True, use_container_width = True)
     if st.button('Generar excel arreglado', use_container_width = True):
-        data = pd.read_excel(excel, sheet_name = 'ITF-Concluidos')
         date1 = data['FCHA_EXPDNTE'].apply(ex2py)
         date2 = data['FECHA_EMISION_OFI'].apply(ex2py)
         date3 = []
@@ -32,8 +39,8 @@ if excel is not None:
             else:
                 date3.append(None)
         date3 = pd.DataFrame(date3, columns = ['DIAS_HABILES'])
-        date4 = pd.concat([date1, date2, date3], axis = 1)
-        st.write(date4)
+        date4 = pd.concat([data[cols_sel], date1, date2, date3], axis = 1)
+
         with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
             date4.to_excel(writer, index = False)
             writer.close()

@@ -34,6 +34,6 @@ if excel is not None:
         st.write(date4)
         with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
             date4.to_excel(writer, index = False)
-            writer.save()
+            writer.close()
             st.download_button(label = "Descargar excel arreglado", data = buffer, file_name = 'Arreglado.xlsx', 
             mime = "application/vnd.ms-excel", use_container_width = True)

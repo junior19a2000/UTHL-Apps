@@ -14,6 +14,8 @@ def ex2py(fecha):
         fecha = None
     return fecha
 
+st.title('Informes Técnicos Favorables')
+
 with st.sidebar: 
     excel  = st.file_uploader('Subir el reporte generado por el sistema:')
     empty1 = st.empty()

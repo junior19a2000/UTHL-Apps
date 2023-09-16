@@ -1,9 +1,7 @@
-import io
+import openpyxl
 import numpy as np
 import pandas as pd
 import streamlit as st
-
-buffer = io.BytesIO()
 
 st.set_page_config(layout = "wide", initial_sidebar_state = 'expanded')
 
@@ -25,6 +23,7 @@ with st.sidebar:
         for i in range(len(columnas)):
             if st.checkbox(columnas[i], key = 'col_' + str(i)):
                 cols_sel.append(columnas[i])
+
         
 if excel is not None:
     if len(cols_sel) != 0: 
@@ -40,9 +39,18 @@ if excel is not None:
                 date3.append(None)
         date3 = pd.DataFrame(date3, columns = ['DIAS_HABILES'])
         date4 = pd.concat([data[cols_sel], date1, date2, date3], axis = 1)
+        date4.to_excel('Actualizado.xlsx', index = False, engine = 'xlsxwriter')
 
-        with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
-            date4.to_excel(writer, index = False)
-            writer.close()
-            st.download_button(label = "Descargar excel arreglado", data = buffer, file_name = 'Arreglado.xlsx', 
-            mime = "application/vnd.ms-excel", use_container_width = True)
+        plantilla = openpyxl.load_workbook('Plantilla.xlsx')
+        plan_hoja = plantilla['Sheet1']
+        actualiza = openpyxl.load_workbook('Actualizado.xlsx')
+        actu_hoja = actualiza['Sheet1']
+        for i in range(plan_hoja.max_row - 1):
+            for j in range(6):
+                plan_hoja.cell(row = i + 2, column = j + 1).value = actu_hoja.cell(row = i + 2, column = j + 1).value
+        plantilla.save('Arreglado.xlsx')
+
+        st.download_button(
+            label = "Descargar excel arreglado", data = open("Arreglado.xlsx", "rb").read(),
+            file_name = "Arreglado.xlsx", use_container_width = True
+        )        

@@ -1,5 +1,6 @@
-xlsxwriter
 numpy
 pandas
+pydeck
 streamlit
-openpyxl
+matplotlib
+Pillow

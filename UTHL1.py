@@ -98,7 +98,7 @@ else:
 
 st.header(':rainbow[Reporte de informes técnicos favorables pendientes]', divider = 'rainbow')
 
-slider1 = st.slider('Rango de dias habiles transcurridos', data2['TIEMPO T'].min(), data2['TIEMPO T'].max(), (data2['TIEMPO T'].min(), data2['TIEMPO T'].max()), step = 1.0)
+slider1 = st.slider('Rango de dias habiles transcurridos', data2['TIEMPO T'].min(), data2['TIEMPO T'].max(), (data2['TIEMPO T'].min(), data2['TIEMPO T'].max()), step = np.int64(1))
 
 data5 = []
 for i in data2['REGION'].unique():
